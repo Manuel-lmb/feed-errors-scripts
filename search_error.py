@@ -31,6 +31,12 @@ def feed_error_type(feed_url: str) -> str:
 
         sCode = response.status_code
 
+        # Check for redirects
+        if response.history:
+            # The last response in history is the one that redirected to the final URL
+            redirect_response = response.history[-1]
+            return f"REDIRECTED: {redirect_response.url} -> {response.url}"
+
         # If the code is 200 it could be html or have some error on the xml
         content_type = response.headers.get("Content-Type", "").lower()
         if sCode == 200:
